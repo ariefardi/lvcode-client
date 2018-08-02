@@ -1,7 +1,9 @@
 <template>
+<div>
+    <Navbar/>
     <v-container>
         <v-layout justify-center row wrap>
-            <v-flex xs12 sm8 v-for="(article, index) in articles" :key="index" >
+            <v-flex xs12 sm8 v-for="(article, index) in articlesByTag" :key="index" >
                 <v-card style="margin:20px">
                     <v-card-media
                     :src="article.imgSrc"
@@ -19,17 +21,22 @@
                     <v-btn :to="`/edit/${article._id}`" v-if="article.author.username==userlogin" icon flat color="orange"><v-icon>edit</v-icon> </v-btn>
                     <v-btn @click="deleteArticle(index)" v-if="article.author.username==userlogin" icon flat color="orange"><v-icon>delete</v-icon></v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn flat small :to="`/tags/${article.category}`" > {{article.category}} </v-btn>
+                    <v-btn flat small > {{article.category}} </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-flex>
         </v-layout>
     </v-container>
+</div>
 </template>
 
 <script>
+import Navbar from '@/components/Navbar.vue'
 import {mapState, mapActions} from 'vuex'
 export default {
+    components: {
+        Navbar
+    },
     data () {
         return {
             userlogin: ''
@@ -38,16 +45,22 @@ export default {
     created () {
         this.$store.dispatch('getArticles')
         this.userlogin = localStorage.getItem('username')
+        this.triggerUser ()
     },
     computed: {
         ...mapState([
-            'articles'
+            'articles', 'articlesByTag'
         ])
     },
     methods: {
         ...mapActions([
-            'deleteArticle'
-        ])
+            'deleteArticle','getByAuthor', 'getByCategory'
+        ]),
+        triggerUser () {
+            let query = this.$route.params.tags
+            console.log(query, 'ini query')
+            this.getByCategory(query)
+        }
     }
 }
 </script>

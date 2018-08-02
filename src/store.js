@@ -13,7 +13,10 @@ export default new Vuex.Store({
     email: '' ,
     loginStatus: false,
     articles: [],
-    pageArticle : ''
+    pageArticle : '',
+    queryAuthor : '',
+    articlesByTag: [],
+    articlesByAuthor: []
   },
   mutations: {
     setUsername (state, payload) {
@@ -36,7 +39,17 @@ export default new Vuex.Store({
     },
     deleteArticle (state, payload) {
       state.articles.splice(payload, 1)
-    }
+    },
+    setQueryAuthor (state, payload) {
+      state.queryAuthor = payload
+    },
+    setArticlesByTag (state, payload) {
+      state.articlesByTag = payload
+    },
+    setArticlesByAuthor (state, payload) {
+      state.articlesByAuthor = payload
+      console.log(state.articlesByAuthor, ' ini dari stat')
+    },
   },
   actions: {
     login ({commit}) {
@@ -59,6 +72,10 @@ export default new Vuex.Store({
           swal('Username/Password salah')
           console.log(err)
       })
+    },
+    logout ({commit}) {
+      localStorage.clear()
+      commit('setLoginStatus', false)
     },
     register ({commit}) {
       axios.post('http://localhost:3000/users/register', {
@@ -108,8 +125,26 @@ export default new Vuex.Store({
         swal('Gagal delete patrick')
       })
     } ,
-    updateArticle ({commit}, index) {
+    searchAuthor ({commit}) {
+      let query = this.state.queryAuthor
+      router.push('/search/'+query)
+    },
+    getByAuthor ({commit}, query) {
+      console.log(query)
       
+      axios.get('http://localhost:3000/articles/author/'+query)
+      .then(({data})=> {
+        console.log(data, ' ini thor')
+        commit('setArticlesByAuthor', data.article)
+      })
+    },
+    getByCategory ({commit}, query) {
+
+      axios.get('http://localhost:3000/articles/category/'+query)
+      .then(({data})=> {
+        console.log(data,' ini data')
+        commit('setArticlesByTag', data.article)
+      })
     }
   }
 })

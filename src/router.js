@@ -6,6 +6,8 @@ import Register from './views/Register.vue'
 import Upload from './views/Upload.vue'
 import Detail from './views/Detail.vue'
 import Edit from './views/Edit.vue'
+import Search from './views/Search.vue'
+import Tags from './views/Tags.vue'
 
 Vue.use(Router)
 
@@ -48,6 +50,16 @@ export default new Router({
       path: '/edit/:id',
       name: 'edit',
       component: Edit
+    },
+    {
+      path: '/search/:query',
+      name: 'search',
+      component: Search
+    },
+    {
+      path: '/tags/:tags',
+      name: 'tags',
+      component: Tags
     },
   ]
 })
